@@ -1,0 +1,91 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}{{auction_data.title}}{% endblock %}
+
+{% block body %}
+
+{% if auction_data.is_active %}
+
+<div>
+    {% if user.is_authenticated %}
+    <form method="get">
+        <input type="submit" class="btn btn-primary" value="Add to watchlist" name="addwatchlist">
+    </form>
+    {% endif %}
+</div> <br>
+
+{% if auction_data.user == user %}
+<form method="get">
+    <input type="submit" class="btn btn-danger" value="Close this listing" name="closelisting">
+</form>
+{% endif %}
+
+{% endif %}
+
+{% if auction_data.is_active == False %}
+
+<div style="text-align:center">
+<h1>This auction is now CLOSED</h1>
+<h1>Auction won by {{auction_winner}}</h1>
+</div><br>
+
+{% endif %}
+
+<div style="text-align:center">
+<h2>{{ auction_data.title }}</h2>
+<h3>Details: {{ auction_data.description }}</h3>
+<h3>Category: {{ auction_data.category }}</h3>
+<img src="{{ auction_data.picture.url }}" alt="Image for Listing" class="img-fluid">
+{% if current_max_bid is not None %}
+<h3>Current highest bid: £{{ current_max_bid }}</h3>
+{% else %}
+<h3>Current highest bid: £{{ auction_data.starting_bid }}</h3>
+{% endif %}
+<h3>Listing created by: {{ auction_data.user }}</h3>
+<br><br>
+
+{% if auction_data.is_active %}
+
+{% if user.is_authenticated %}
+<div class="container">
+    {% include 'messages.html' %}
+    <div class="row justify-content-center">
+    <div style="col-lg-3 mx-auto">
+    <form method="post">
+        {% csrf_token %} 
+        {{ bidsform.as_p }}
+    <button type="submit" class="btn btn-info" name="save_bid">Make Bid</button>
+</div>
+</div>
+</div><br><br>
+{% endif %}
+
+<h3>Comments:</h3>
+{% for comment in comments %}
+<h3>{{comment.comment}} - {{comment.user}}</h3>
+{% endfor %}
+</div><br>
+
+{% if user.is_authenticated %}
+
+<div class="container">
+<div class="row justify-content-center">
+<div style="col-lg-3 mx-auto">
+<form method="post">
+    {% csrf_token %} 
+    {{ commentsform.as_p }}
+<button type="submit" class="btn btn-primary" name="save_comment">Submit New Comment</button>
+</div>
+</div>
+</div>
+{% endif %}
+
+{% endif %}
+
+{% if auction_winner == user %}
+    <h1>YOU WON THE AUCTION</h1>
+    <h1>CONGRATULATIONS!!!</h1>
+{% endif %}
+
+{% endblock %}
+

@@ -1,0 +1,17 @@
+{% extends "auctions/layout.html" %} 
+
+
+
+{% block body %}
+
+<h1>{{user}}'s watchlist:</h1> <br>
+
+{% for item in watchlist %}
+    <h2><a href='http://127.0.0.1:8000/{{item.auction.id}}'>{{item.auction.title}}</a></h2>
+    <form method="get">
+        <input type="submit" class="btn btn-outline-primary btn-sm" value="Remove from watchlist" name="watchlistremove">
+        <input type="hidden" name="ModelRef" value="{{item.id}}">
+    </form>
+{% endfor %}
+
+{% endblock %}

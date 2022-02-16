@@ -1,0 +1,46 @@
+{% extends "auctions/layout.html" %} {% block body %}
+
+
+
+<h2>Active Listings:</h2><br>
+
+<div class="container">
+
+<div class="row">
+
+{% for datum in page.object_list %}
+{% if datum.0.is_active %}
+
+    <div class="col-lg-3">
+    <h2><a href='{{datum.0.id}}'>{{datum.0.title}}</a></h2>
+    <h3>{{datum.0.description}}</h3>
+    <h3>Category: {{datum.0.category}}</h3>
+    {% if datum.1 is not None %}
+    <h3>Current Bid: £{{datum.1.normalize}}</h3>
+    {% else %}
+    <h3>Current Bid: £{{datum.0.starting_bid}}</h3>
+    {% endif %}
+    <img src="{{datum.0.picture.url}} "alt="Image for Listing" class="img-fluid">
+    <h3>Listed by: {{datum.0.user}}</h3>
+    <br>
+    </div> 
+
+{% endif %}
+{% endfor %}
+
+</div>
+</div>
+
+<br>
+<h2 style="text-align: center">Page Number: {{ page.number }}</h2>
+
+<div style="text-align: center">
+    {% if page.has_previous %}
+    <a href="{% url 'index'%}?page={{ page.previous_page_number }}">Previous Page</a>
+    {% endif %}
+    {% if page.has_next %}
+    <a href="{% url 'index'%}?page={{ page.next_page_number }}">Next Page</a>
+    {% endif %}
+</div>
+{% endblock %}
+
